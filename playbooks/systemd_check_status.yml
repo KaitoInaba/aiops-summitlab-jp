@@ -52,20 +52,20 @@
       ansible.builtin.set_stats:
         data:
           slack_message: |
-            We have an issue on our Red Hat Enterprise Linux server with the {{ linux_service }} service.
+            Red Hat Enterprise Linuxサーバーにおいて、サービス {{ linux_service }} に問題が発生しています。
 
-            The {{ linux_service }} service will not start.
+            サービス {{ linux_service }} は開始されません。
 
-            Here are recent error logs: {{ systemd_log_output }}
+            最近のエラーログは以下の通りです： {{ systemd_log_output }}
           max_tokens: 50
           gpt_prompt: >-
-            \n### Instructions:\nA system service is failing on node1. Based on the logs below, Provide a single, concise fix instruction (1-2 lines), make sure to add restart of {{ linux_service }} service.\n
+            \n### Instructions:\nA system service is failing on node1. Based on the logs below, Provide a single, concise fix instruction (1-2 lines), make sure to add restart of {{ linux_service }} service. Please provide the fix instruction in Japanese.\n
             \n### Logs:\n{{ systemd_log_output_escaped }}\n
             \n### Fix:\n
           rca_prompt: >-
             ### Instructions:
             A system service is failing on node1. Analyze the logs below and
-            generate a Root Cause Analysis (RCA) in detail.
+            generate a Root Cause Analysis (RCA) in detail. Please provide RCA in Japanese.
 
             ### Logs:
             {{ systemd_log_output_escaped }}
