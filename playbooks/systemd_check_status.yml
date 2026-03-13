@@ -67,7 +67,7 @@
           rca_prompt: >-
             ### Instructions:
             A system service is failing on node1. Analyze the logs below and
-            generate a Root Cause Analysis (RCA) in Japanese.
+            generate a Root Cause Analysis (RCA) details in Japanese.
 
             ### Logs:
             {{ systemd_log_output_escaped }}
