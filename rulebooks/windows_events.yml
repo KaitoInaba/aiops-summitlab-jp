@@ -1,0 +1,43 @@
+---
+- name: Windows Event Detection
+  hosts: all
+  sources:
+    - ansible.eda.kafka:
+        host: service1
+        port: 9092
+        topic: windows-events
+
+  rules:
+    # Scenario 1: Account Creation (Event ID 4722 - account enabled, filtered to TestUser only)
+    - name: AD account enabled detected
+      condition: event.body.winlog.event_id == "4722" and event.body.winlog.event_data.TargetUserName is search("TestUser")
+      action:
+        run_job_template:
+          organization: "Default"
+          name: "Windows: Create Mattermost Ticket"
+          job_args:
+            extra_vars:
+              windows_event_id: "{{ event.body.winlog.event_id }}"
+              windows_event_description: "{{ event.body.message | default('AD account enabled') }}"
+              windows_target_account: "{{ event.body.winlog.event_data.TargetUserName | default('unknown') }}"
+              windows_source_account: "{{ event.body.winlog.event_data.SubjectUserName | default('unknown') }}"
+              ticket_type: "ad_account_creation"
+
+    # Scenario 2: Windows Firewall rule added for LabTestRule-AIOps
+    - name: Windows Firewall change detected
+      condition: event.body.winlog.event_id == "2004" and event.body.message is search("LabTestRule")
+      action:
+        run_job_template:
+          organization: "Default"
+          name: "Windows AI: Analyze and Ticket"
+          job_args:
+            extra_vars:
+              windows_event_id: "{{ event.body.winlog.event_id }}"
+              windows_event_message: "{{ event.body.message | default('Firewall event detected') }}"
+
+    # Debug: show all Windows event messages
+    - name: show Windows event messages
+      condition: event.body.message is defined
+      action:
+        debug:
+          msg: "Windows Event: {{ event.body.message }}"
