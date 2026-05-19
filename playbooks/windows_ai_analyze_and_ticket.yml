@@ -27,7 +27,7 @@
             You are a Windows system administrator assistant. Analyze the following Windows Event Log entry.
             Explain what this event means, what security implications it has, and provide 3 recommended actions.
             Please answer in Japanese.
-            Keep your response concise (under 200 words).
+            Keep your response concise.
 
             ### Windows Event ID: {{ windows_event_id }}
             ### Event Message: {{ windows_event_message | default('No message available') }}
